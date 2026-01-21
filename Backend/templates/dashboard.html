@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini 3 Workflow | Backend Monitor</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --border-color: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent-color: #58a6ff;
+            --success-color: #238636;
+            --warning-color: #d29922;
+            --error-color: #f85149;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 2rem;
+            width: 100%;
+        }
+
+        h1 {
+            font-weight: 300;
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        h2 {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            font-weight: 400;
+        }
+
+        .refresh-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--accent-color);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            margin-top: 1rem;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            border-color: var(--accent-color);
+        }
+
+        .workflow-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: rgba(35, 134, 54, 0.2);
+            color: #3fb950;
+        }
+
+        .status-idle {
+            background: rgba(139, 148, 158, 0.2);
+            color: #8b949e;
+        }
+
+        .status-processing {
+            background: rgba(210, 153, 34, 0.2);
+            color: #e3b341;
+        }
+
+        pre {
+            background: #0d1117;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+        }
+
+        .metric-value {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* Tech Overview */
+        .tech-container {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            width: 100%;
+        }
+
+        .tech-header {
+            text-align: center;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tech-card {
+            background: rgba(22, 27, 34, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .tech-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+        }
+
+        .tech-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .tech-title {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .tech-desc {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            line-height: 1.5;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Gemini 3 Backend Workflow</h1>
+        <h2>Port 5001 • Live Audit Monitor</h2>
+        <button class="refresh-btn" onclick="window.location.reload()">Refresh Data</button>
+    </header>
+
+    <div class="container">
+        {% if not audit_state %}
+        <div class="card empty-state">
+            No audit transactions processed yet.<br>
+            Upload a file via the <a href="http://localhost:3000" style="color: var(--accent-color);">Frontend
+                Dashboard</a> to see the workflow active.
+        </div>
+        {% else %}
+        <div class="workflow-grid">
+            <!-- Stage 1: Acquisition -->
+            <div class="pipeline-card" id="stage-ingestion">
+                <div class="card-header">
+                    <div class="card-title">1. Acquisition: Ticket Streaming</div>
+                    <span class="status-badge status-active">COMPLETED</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Filename:</span>
+                    <span class="metric-value">{{ audit_state.filename }}</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Size:</span>
+                    <span class="metric-value">{{ audit_state.file_size }} bytes</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Timestamp:</span>
+                    <span class="metric-value">{{ audit_state.timestamp }}</span>
+                </div>
+                <pre>{{ audit_state.raw_preview }}</pre>
+            </div>
+
+            <!-- Stage 2: Aggregation -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">2. Aggregation: Quarterly Collection</div>
+                    <span class="status-badge status-active">ACTIVE</span>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                    Maintaining 4-month fiscal state context.
+                </p>
+                <div class="metric-row">
+                    <span class="metric-label">Fiscal Period:</span>
+                    <span class="metric-value">{{ audit_state.aggregation.fiscal_state }}</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Thought Signatures:</span>
+                    <span class="metric-value" style="color: var(--accent-color);">Enabled</span>
+                </div>
+            </div>
+
+            <!-- Stage 3: Computation & Reasoning -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">3. Computation: Recursive Reasoning</div>
+                    {% if audit_state.is_mock %}
+                    <span class="status-badge status-processing">MOCK FALLBACK</span>
+                    {% else %}
+                    <span class="status-badge status-active">GEMINI PRO</span>
+                    {% endif %}
+                </div>
+                <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                    Executing `run_budget_audit()` logic...
+                </p>
+                <div class="metric-row">
+                    <span class="metric-label">Method:</span>
+                    <span class="metric-value">POST /audit</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Processing Time:</span>
+                    <span class="metric-value">~1.2s</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Generated Signature:</span>
+                    <span class="metric-value">{{ audit_state.output.thought_signature }}</span>
+                </div>
+            </div>
+
+            <!-- Stage 4: Agency -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">4. Agency: Proactive Recovery</div>
+                    <span class="status-badge status-processing">TRIGGERED</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Action:</span>
+                    <span class="metric-value" style="color: var(--warning-color);">{{ audit_state.agency.action
+                        }}</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Trigger:</span>
+                    <span class="metric-value">{{ audit_state.agency.trigger }}</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Est. Savings:</span>
+                    <span class="metric-value">{{ audit_state.agency.savings_potential }}</span>
+                </div>
+            </div>
+
+            <!-- Stage 5: Compliance -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">5. Compliance: Goal Verification</div>
+                    <span class="status-badge status-active">VERIFIED</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Regulation:</span>
+                    <span class="metric-value">{{ audit_state.compliance.regulation }}</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Reference:</span>
+                    <span class="metric-value">{{ audit_state.compliance.cross_reference }}</span>
+                </div>
+            </div>
+
+            <!-- Stage 6: Output -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">6. Output: Parliamentary Report</div>
+                    <span class="status-badge status-active">READY</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Operating Ratio:</span>
+                    <span class="metric-value" style="color: var(--success-color);">{{
+                        audit_state.output.operating_ratio }}%</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-label">Gap:</span>
+                    <span class="metric-value" style="color: var(--warning-color);">{{
+                        audit_state.output.operating_ratio_gap }}%</span>
+                </div>
+                <pre>{{ audit_state.output_json }}</pre>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- System Architecture Section -->
+    <div class="container tech-container">
+        <h3 class="tech-header">System Architecture: 6-Stage Pipeline</h3>
+        <div class="tech-grid">
+            <div class="tech-card">
+                <span class="tech-icon">📡</span>
+                <span class="tech-title">1. Stream Input</span>
+                <span class="tech-desc">Python-buffered I/O handling high-velocity CSV ticket streams from legacy rail
+                    APIs.</span>
+            </div>
+            <div class="tech-card">
+                <span class="tech-icon">🧩</span>
+                <span class="tech-title">2. State Aggregation</span>
+                <span class="tech-desc">Fiscal context manager maintaining 4-month window memory and identifying
+                    aggregation gaps.</span>
+            </div>
+            <div class="tech-card">
+                <span class="tech-icon">🧠</span>
+                <span class="tech-title">3. Gemini 3.0 Core</span>
+                <span class="tech-desc">Recursive reasoning engine acting as the primary auditor with chain-of-thought
+                    capabilities.</span>
+            </div>
+            <div class="tech-card">
+                <span class="tech-icon">🤖</span>
+                <span class="tech-title">4. Agency Module</span>
+                <span class="tech-desc">Autonomous heuristic triggers for proactive crew scheduling and cost recovery
+                    actions.</span>
+            </div>
+            <div class="tech-card">
+                <span class="tech-icon">⚖️</span>
+                <span class="tech-title">5. Compliance Verify</span>
+                <span class="tech-desc">Regulatory cross-check engine validating against FRA 49 CFR & EPA Tier 4
+                    standards.</span>
+            </div>
+            <div class="tech-card">
+                <span class="tech-icon">📤</span>
+                <span class="tech-title">6. Structured Output</span>
+                <span class="tech-desc">JSON Schema enforcer guaranteeing strict data types for frontend dashboard
+                    consumption.</span>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

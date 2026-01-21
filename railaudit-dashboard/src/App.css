@@ -1,0 +1,681 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg-color: #0d1117;
+  --card-bg: #161b22;
+  --border-color: #30363d;
+  --text-primary: #c9d1d9;
+  --text-secondary: #8b949e;
+  --accent-color: #58a6ff;
+  --success-color: #238636;
+  --warning-color: #d29922;
+  --error-color: #f85149;
+  --glass-bg: rgba(22, 27, 34, 0.7);
+  --glass-border: rgba(48, 54, 61, 0.6);
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+.App-header {
+  width: 100%;
+  max-width: 1200px;
+  text-align: center;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1.5rem;
+}
+
+.model-details-banner {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--accent-color);
+  letter-spacing: 1.5px;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-weight: 300;
+  font-size: 2.5rem;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+h2 {
+  font-weight: 400;
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
+.header-description {
+  max-width: 700px;
+  margin: 1rem auto 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.header-description strong {
+  color: var(--accent-color);
+  font-weight: 500;
+}
+
+.main-content {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* --- Intro Section & Carousel --- */
+.hero-carousel {
+  width: 100%;
+  max-width: 1000px;
+  height: 320px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 2rem;
+  background: #0d1117;
+}
+
+.carousel-slide {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+  display: flex;
+  /* Side by side layout */
+  align-items: stretch;
+}
+
+.carousel-slide.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.slide-content-side {
+  flex: 1;
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  background: var(--card-bg);
+  z-index: 2;
+  text-align: left;
+}
+
+.slide-content-side h2 {
+  font-size: 1.8rem;
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.slide-content-side p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  font-size: 0.95rem;
+}
+
+.slide-image-side {
+  flex: 1.2;
+  /* Image takes slightly more space */
+  background: url('./assets/network_bg.jpg') no-repeat center top;
+  background-size: cover;
+  position: relative;
+  border-left: 1px solid var(--border-color);
+  animation: mapScan 40s infinite linear alternate;
+}
+
+@keyframes mapScan {
+  0% {
+    background-position: center 0%;
+  }
+
+  100% {
+    background-position: center 10%;
+  }
+}
+
+.intro-stats-mini {
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* Ensure Logo Crop is visible */
+.app-logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+/* --- Logo Crop --- */
+.app-logo-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.app-logo-crop {
+  width: 300px;
+  height: 100px;
+  background: url('./assets/network_bg.jpg') no-repeat center bottom;
+  /* Bottom part is the logo */
+  background-size: 100% auto;
+  /* Fit width, crop height */
+  background-position: center 90%;
+  /* Focus on the bottom logo */
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(88, 166, 255, 0.2);
+}
+
+/* --- Network Map SVG with Overlay --- */
+.network-map-container {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Clean Map Background */
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at center, #1b2129 0%, #0d1117 100%);
+  /* Clean Gradient */
+  border-radius: 8px;
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
+}
+
+/* No overlay needed for gradient */
+.map-wrapper::before {
+  display: none;
+}
+
+/* Ensure SVG is on top */
+.network-svg {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  max-width: 500px;
+}
+
+/* --- Upload Section --- */
+.upload-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  transition: transform 0.2s, border-color 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-bottom: 2rem;
+}
+
+.upload-card h3 {
+  text-align: center;
+  font-weight: 400;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent-color);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  margin-top: 0;
+}
+
+.upload-card:hover {
+  border-color: var(--accent-color);
+}
+
+.file-input-wrapper {
+  margin-bottom: 1.5rem;
+}
+
+.file-input {
+  background: var(--bg-color);
+  color: var(--text-primary);
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  width: 100%;
+  max-width: 400px;
+}
+
+.audit-button {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.audit-button:hover {
+  opacity: 0.9;
+}
+
+.audit-button:disabled {
+  background: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+/* --- Results Section --- */
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Tech Overview Section --- */
+.tech-overview-container {
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+  animation: fadeIn 0.8s ease-out;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.tech-overview-container h3 {
+  text-align: center;
+  /* Align with other card headers */
+  font-weight: 400;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent-color);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  margin-top: 0;
+}
+
+.tech-grid {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 0;
+  /* Remove gap, handle spacing via padding/margin for connectors */
+  flex-wrap: nowrap;
+  /* Keep them in line */
+  overflow-x: auto;
+  /* Handle overflow on very small screens */
+  padding-bottom: 0.5rem;
+  /* Space for scrollbar if needed */
+  position: relative;
+}
+
+.tech-card {
+  background: transparent;
+  /* Remove card bg for cleaner pipeline look */
+  border: none;
+  border-radius: 0;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s, background-color 0.2s;
+  flex: 1;
+  /* Distribute space evenly */
+  min-width: 150px;
+  position: relative;
+}
+
+/* Remove hover effects */
+.tech-card:hover {
+  transform: none;
+  background: transparent;
+  border-color: transparent;
+}
+
+/* Add pipeline connector arrows */
+.tech-card:not(:last-child)::after {
+  content: '➔';
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  opacity: 0.5;
+  z-index: 1;
+}
+
+
+
+.tech-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.tech-info h4 {
+  margin: 0 0 0.5rem;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.tech-info p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.metric-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.visual-card {
+  grid-column: span 2;
+  /* Make visual card span full width on larger screens */
+}
+
+@media (max-width: 768px) {
+  .visual-card {
+    grid-column: span 1;
+  }
+}
+
+.charts-wrapper {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.chart-container {
+  flex: 1;
+  min-width: 250px;
+  text-align: center;
+}
+
+.chart-container h4 {
+  margin: 0 0 1rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.gauge-label {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.chart-caption {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 5px;
+}
+
+.metric-card h3 {
+  margin-top: 0;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+}
+
+.stat-label {
+  color: var(--text-secondary);
+}
+
+.stat-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.stat-value.highlight {
+  color: var(--accent-color);
+}
+
+.stat-value.success {
+  color: var(--success-color);
+}
+
+.stat-value.warning {
+  color: var(--warning-color);
+}
+
+/* --- Workflow Link --- */
+.workflow-nav {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.workflow-link-btn {
+  display: inline-block;
+  background: transparent;
+  color: var(--accent-color);
+  border: 1px solid var(--accent-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.workflow-link-btn:hover {
+  background: rgba(88, 166, 255, 0.1);
+  box-shadow: 0 0 15px rgba(88, 166, 255, 0.2);
+}
+
+.error-banner {
+  background: rgba(248, 81, 73, 0.1);
+  border: 1px solid var(--error-color);
+  color: var(--error-color);
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* --- Interactive Metrics --- */
+.stat-row-container {
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  position: relative;
+}
+
+.stat-row-container:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.info-icon {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 0.8em;
+  color: var(--accent-color);
+  opacity: 0.7;
+}
+
+.metric-description {
+  margin-top: 0.5rem;
+  font-size: 0.8em;
+  color: var(--text-primary);
+  background: rgba(13, 17, 23, 0.8);
+  padding: 0.5rem;
+  border-left: 2px solid var(--accent-color);
+  border-radius: 0 4px 4px 0;
+  line-height: 1.4;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Network Map SVG --- */
+.network-map-container {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.network-map-container h3 {
+  margin-top: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+
+
+.network-svg {
+  width: 100%;
+  height: 100%;
+  max-width: 500px;
+}
+
+.map-connection {
+  transition: stroke 0.3s;
+}
+
+.map-node-group {
+  cursor: pointer;
+}
+
+.map-node-group:hover .map-connection {
+  stroke: var(--accent-color);
+}
+
+.map-node-dot {
+  transition: r 0.3s;
+}
+
+.map-node-group:hover .map-node-dot {
+  r: 10;
+}
+
+.map-node-pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+    transform-origin: center;
+  }
+
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+    transform-origin: center;
+  }
+}
+
+.node-tooltip {
+  position: absolute;
+  background: rgba(13, 17, 23, 0.9);
+  border: 1px solid var(--accent-color);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  pointer-events: none;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.node-tooltip strong {
+  display: block;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.node-tooltip p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-family: 'JetBrains Mono', monospace;
+}

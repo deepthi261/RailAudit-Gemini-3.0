@@ -1,0 +1,26 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "Backend/index.py",
+            "use": "@vercel/python"
+        },
+        {
+            "src": "railaudit-dashboard/package.json",
+            "use": "@vercel/static-build",
+            "config": {
+                "distDir": "build"
+            }
+        }
+    ],
+    "routes": [
+        {
+            "src": "/audit",
+            "dest": "/Backend/index.py"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/railaudit-dashboard/$1"
+        }
+    ]
+}
