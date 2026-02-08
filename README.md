@@ -62,9 +62,9 @@ I have created diverse datasets for your demo in the `Backend/datasets` folder:
 
 ## 🔗 "Public" Access
 As this is a locally running prototype, there is no public URL (like `railaudit.ai`). The working product is accessible at:
-- **Interactive Dashboard:** [http://localhost:3000](http://localhost:3000)
-- **Backend Pipeline:** [http://localhost:5001](http://localhost:5001)
-
+https://railaudit-frontend-o7vz2fgdrq-uc.a.run.app/
+- **Interactive Dashboard:** 
+- **Backend Pipeline:** 
 ## 📦 Deployment Note
 To make this public, you would typically deploy:
 - **Frontend** to Vercel/Netlify.
